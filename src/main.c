@@ -18,64 +18,76 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <cpu.h>
-#include <wfi.h>
+#include <zdma.h>
 #include <spinlock.h>
-#include <plat.h>
-#include <irq.h>
-#include <uart.h>
 #include <timer.h>
+#include <wfi.h>
 
-#define TIMER_INTERVAL (TIME_S(1))
+struct zdma_ch_hw *zdma_ch_0 = (void*)0x00FFA80000;
+struct zdma_ch_hw *zdma_ch_1 = (void*)0x00FFA90000;
+struct zdma_ch_hw *zdma_ch_2 = (void*)0x00FFAA0000;
+
+#define DMA_SIZE (64)
+__attribute__((aligned(DMA_SIZE))) const char dma_src0[DMA_SIZE] = "success!";
+__attribute__((aligned(DMA_SIZE))) const char dma_src1[DMA_SIZE] = "success!";
+__attribute__((aligned(DMA_SIZE))) const char dma_src2[DMA_SIZE] = "success!";
+__attribute__((aligned(DMA_SIZE))) char dma_dst0[DMA_SIZE*4] = "failed!";
+__attribute__((aligned(DMA_SIZE))) char dma_dst1[DMA_SIZE*4] = "failed!";
+__attribute__((aligned(DMA_SIZE))) char dma_dst2[DMA_SIZE*4] = "failed!";
+
+void abort() {
+    printf("abort!\n");
+    printf("far: 0x%lx\n", sysreg_far_el1_read());
+    printf("esr: 0x%lx\n", sysreg_esr_el1_read());
+    while (true) { }
+}
+
+void dma_test(void) {
+
+    printf("Starting DMA0 transfer: %s\n", dma_src0);
+    zdma_ch_init(zdma_ch_0, ZDMA_MODE_SIMPLE);
+    zdma_ch_set_src_addr(zdma_ch_0, (uintptr_t) dma_src0);
+    zdma_ch_set_dst_addr(zdma_ch_0, (uintptr_t) dma_dst0);
+    zdma_ch_set_size(zdma_ch_0, DMA_SIZE);
+    zdma_ch_start(zdma_ch_0);
+    zdma_ch_poll_end(zdma_ch_0);
+    printf("Finished DMA0 transfer. Destination buffer: %s\n", dma_dst0);
+
+    printf("\n");
+
+    // printf("Starting DMA1 transfer: %s\n", dma_src1);
+    // zdma_ch_init(zdma_ch_1, ZDMA_MODE_SIMPLE);
+    // zdma_ch_set_src_addr(zdma_ch_1, (uintptr_t) dma_src1);
+    // zdma_ch_set_dst_addr(zdma_ch_1, (uintptr_t) dma_dst1);
+    // zdma_ch_set_size(zdma_ch_1, DMA_SIZE);
+    // zdma_ch_start(zdma_ch_1);
+    // zdma_ch_poll_end(zdma_ch_1);
+    // printf("Finished DMA1 transfer. Destination buffer: %s\n", dma_dst1);
+
+    // printf("\n");
+
+    // printf("Starting DMA2 transfer: %s\n", dma_src2);
+    // zdma_ch_init(zdma_ch_2, ZDMA_MODE_SIMPLE);
+    // zdma_ch_set_src_addr(zdma_ch_2, (uintptr_t) dma_src2);
+    // zdma_ch_set_dst_addr(zdma_ch_2, (uintptr_t) dma_dst2);
+    // zdma_ch_set_size(zdma_ch_2, DMA_SIZE);
+    // zdma_ch_start(zdma_ch_2);
+    // zdma_ch_poll_end(zdma_ch_2);
+    // printf("Finished DMA2 transfer. Destination buffer: %s\n", dma_dst2);
+}
+
 
 spinlock_t print_lock = SPINLOCK_INITVAL;
 
-void uart_rx_handler(){
-    printf("cpu%d: %s\n",get_cpuid(), __func__);
-    uart_clear_rxirq();
-}
-
-void ipi_handler(){
-    printf("cpu%d: %s\n", get_cpuid(), __func__);
-    irq_send_ipi(1ull << (get_cpuid() + 1));
-}
-
-void timer_handler(){
-    printf("cpu%d: %s\n", get_cpuid(), __func__);
-    timer_set(TIMER_INTERVAL);
-    irq_send_ipi(1ull << (get_cpuid() + 1));
-}
-
 void main(void){
 
-    static volatile bool master_done = false;
-
-    if(cpu_is_master()){
-        spin_lock(&print_lock);
-        printf("Bao bare-metal test guest\n");
-        spin_unlock(&print_lock);
-
-        irq_set_handler(UART_IRQ_ID, uart_rx_handler);
-        irq_set_handler(TIMER_IRQ_ID, timer_handler);
-        irq_set_handler(IPI_IRQ_ID, ipi_handler);
-
-        uart_enable_rxirq();
-
-        timer_set(TIMER_INTERVAL);
-        irq_enable(TIMER_IRQ_ID);
-        irq_set_prio(TIMER_IRQ_ID, IRQ_MAX_PRIO);
-
-        master_done = true;
+    if (!cpu_is_master()) {
+        return;
     }
 
-    irq_enable(UART_IRQ_ID);
-    irq_set_prio(UART_IRQ_ID, IRQ_MAX_PRIO);
-    irq_enable(IPI_IRQ_ID);
-    irq_set_prio(IPI_IRQ_ID, IRQ_MAX_PRIO);
+    dma_test();
 
-    while(!master_done);
-    spin_lock(&print_lock);
-    printf("cpu %d up\n", get_cpuid());
-    spin_unlock(&print_lock);
-
-    while(1) wfi();
+    while(true) {
+        wfi();
+    }
 }

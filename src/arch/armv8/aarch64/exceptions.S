@@ -74,7 +74,8 @@ curr_el_sp0_serror:
  */  
 .balign ENTRY_SIZE  
 curr_el_spx_sync:        
-    b	.
+    b	abort
+    b   .
 .balign ENTRY_SIZE
 curr_el_spx_irq:       
     SAVE_REGS

@@ -25,6 +25,8 @@ ENTRY(_start)
 
 SECTIONS {
 
+    . = ORIGIN(RAM);
+
     .start : {
         *(.start)
     } 
