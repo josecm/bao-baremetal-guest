@@ -25,7 +25,7 @@ src_dir:=$(current_dir)/src
 core_dir:=$(src_dir)/core
 platform_dir:=$(src_dir)/platform/$(PLATFORM)
 drivers_dir:=$(src_dir)/drivers
-src_dirs+=$(src_dir) $(core_dir) $(platform_dir)
+src_dirs+= $(core_dir) $(platform_dir)
 SRC_DIRS+=$(src_dirs)
 INC_DIRS+=$(addsuffix /inc, $(src_dirs))
 

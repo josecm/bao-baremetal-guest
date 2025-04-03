@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/stat.h>
-#include <sys/errno.h>
+// #include <sys/stat.h>
+// #include <sys/errno.h>
 
 #include <spinlock.h>
 #include <uart.h>
@@ -39,28 +39,33 @@ int _write(int file, char *ptr, int len)
     return len;
 }
 
-int _lseek(int file, int ptr, int dir)
-{
-    errno = ESPIPE;
-    return -1;
-}
-
-int _close(int file)
-{
-    return -1;
-}
-
-int _fstat(int file, struct stat *st)
-{
-    st->st_mode = S_IFCHR;
+int _REL_putc_r(FILE *fp, int c){
+    uart_putc(c);
     return 0;
 }
 
-int _isatty(int fd)
-{
-    errno = ENOTTY;
-    return 0;
-}
+// int _lseek(int file, int ptr, int dir)
+// {
+//     errno = ESPIPE;
+//     return -1;
+// }
+
+// int _close(int file)
+// {
+//     return -1;
+// }
+
+// int _fstat(int file, struct stat *st)
+// {
+//     st->st_mode = S_IFCHR;
+//     return 0;
+// }
+
+// int _isatty(int fd)
+// {
+//     errno = ENOTTY;
+//     return 0;
+// }
 
 void* _sbrk(int increment)
 {
@@ -84,11 +89,11 @@ int _getpid(void)
   return 1;
 }
 
-int _kill(int pid, int sig)
-{
-    errno = EINVAL;
-    return -1;
-}
+// int _kill(int pid, int sig)
+// {
+//     errno = EINVAL;
+//     return -1;
+// }
 
 extern void arch_init();
 extern int main();
@@ -96,7 +101,7 @@ extern int main();
 static bool init_done = false;
 static spinlock_t init_lock = SPINLOCK_INITVAL;
 
-__attribute__((weak))
+// __attribute__((weak))
 void _init(){
 
     spin_lock(&init_lock);

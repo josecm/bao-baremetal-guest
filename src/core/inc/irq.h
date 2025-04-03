@@ -4,7 +4,7 @@
 #include <core.h>
 #include <arch/irq.h>
 
-typedef void (*irq_handler_t)(unsigned id);
+typedef void (*irq_handler_t)(unsigned long id);
 
 void irq_handle(unsigned id);
 void irq_set_handler(unsigned id, irq_handler_t handler);
