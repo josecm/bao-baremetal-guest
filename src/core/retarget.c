@@ -97,6 +97,7 @@ int _getpid(void)
 
 extern void arch_init();
 extern int main();
+extern void plat_init();
 
 static bool init_done = false;
 static spinlock_t init_lock = SPINLOCK_INITVAL;
@@ -106,8 +107,9 @@ void _init(){
 
     spin_lock(&init_lock);
     if(!init_done) {
-        init_done = true;
+        plat_init();
         uart_init();
+        init_done = true;
     }
     spin_unlock(&init_lock);
     
