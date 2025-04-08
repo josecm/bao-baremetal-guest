@@ -27,9 +27,6 @@ void uart_clear_rxirq()
     renesas_rlin3_clear_rxirq(uart);
 }
 
-/* CLK_CPU Selector Control Register */
-#define MCU_CKSC_CPUC (*((volatile uint32 *)0xFF980100UL))
-
 #define MCU_CKSC_DISABLE_REG_PROTECT_VALUE (0xA5A5A501UL)
 #define MCU_CKSC_ENABLE_REG_PROTECT_VALUE (0xA5A5A500UL)
 #define MCU_CLKKCPROT1 (0xFF980700UL)
@@ -42,7 +39,6 @@ void uart_clear_rxirq()
 #define MCU_PLLE_ENABLE_TRIGGER  (0x00000001UL)
 #define MCU_PLLE_DISABLE_TRIGGER (0x00000002UL)
 
-/* CLK_CPU Selector Control Register */
 #define MCU_CKSC_CPUC  (0xFF980100UL)
 
 #define MCU_PLLSTPM  (0xFF98000CUL)
@@ -79,10 +75,22 @@ void plat_init() {
     (*(volatile uint32_t*)MCU_HSOSCSTPM) = 1UL;
     (*(volatile uint32_t*)MCU_CLKKCPROT1) = MCU_CKSC_ENABLE_REG_PROTECT_VALUE;
 
-
-
     // Enable Write Port
     (*(volatile uint32_t*)MCU_PKCPROT) = PORT_PWE_ENABLE_WRITE;
     (*(volatile uint32_t*)MCU_PWE) = PORT_PWE_ALL_MASK;
+    (*(volatile uint32_t*)MCU_PKCPROT) = PORT_PWE_DISABLE_WRITE;
+
+    for (int i = 0; i < PLAT_NUM_PORT_REGS; i++) {
+        for (int j = 0; j < PLAT_NUM_PORT_GROUPS; j++) {
+            uint16_t *port_reg_addr = (
+                    void*)(PLAT_PORT_BASE + (0x40 * group_number[j]) + port_reg_offset[i]);
+            *port_reg_addr = port_reg_val[i][j];
+        }
+    }
+
+
+    // Disable Write Port
+    (*(volatile uint32_t*)MCU_PKCPROT) = PORT_PWE_ENABLE_WRITE;
+    (*(volatile uint32_t*)MCU_PWE) = 0;
     (*(volatile uint32_t*)MCU_PKCPROT) = PORT_PWE_DISABLE_WRITE;
 }

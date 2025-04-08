@@ -4,17 +4,19 @@
 #include <core.h>
 
 struct renesas_rlin3 {
-    uint8_t pad0[1];                 // 0x0
+    uint8_t pad0[1];                // 0x0
     volatile uint8_t RLN3nLWBR;     // 0x1
     volatile uint16_t RLN3nLBRP01;  // 0x2
-    volatile uint32_t RLN3nLSTC;    // 0x4
+    volatile uint8_t RLN3nLSTC;     // 0x4
+    volatile uint8_t pad1[3];       // 0x5
     volatile uint8_t RLN3nLMD;      // 0x8
     volatile uint8_t RLN3nLBFC;     // 0x9
     volatile uint8_t RLN3nLSC;      // 0xa
     volatile uint8_t RLN3nLWUP;     // 0xb
     volatile uint8_t RLN3nLIE;      // 0xc
     volatile uint8_t RLN3nLEDE;     // 0xd
-    volatile uint16_t RLN3nLCUC;    // 0xe
+    volatile uint8_t RLN3nLCUC;     // 0xe
+    volatile uint8_t pad2[1];       // 0xf
     volatile uint8_t RLN3nLTRC;     // 0x10
     volatile uint8_t RLN3nLMST;     // 0x11
     volatile uint8_t RLN3nLST;      // 0x12
@@ -33,10 +35,13 @@ struct renesas_rlin3 {
     volatile uint8_t RLN3nLDBR8;    // 0x1f
     volatile uint8_t RLN3nLUOER;    // 0x20
     volatile uint8_t RLN3nLUOR1;    // 0x21
-    uint8_t pad1[2];                 // 0x22
+    uint8_t pad3[2];                // 0x22
     volatile uint16_t RLN3nLUTDR;   // 0x24
     volatile uint16_t RLN3nLURDR;   // 0x26
     volatile uint16_t RLN3nLUWTDR;  // 0x28
+    volatile uint8_t RLN3nLBSS;     // 0x30
+    volatile uint8_t pad4[3];       // 0x31
+    volatile uint8_t RLN3nLRSS;     // 0x34
 };
 
 void renesas_rlin3_init(struct renesas_rlin3* uart);

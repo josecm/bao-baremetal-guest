@@ -34,7 +34,9 @@ void renesas_rlin3_init(struct renesas_rlin3* uart)
     // Set baud rate to 500000 assuming CLK_RLIN = 80 MHz
     uart->RLN3nLWBR = 0; // prescaler reset;
     uart->RLN3nLWBR = RLIN3_LWBR_LPRS_16 | RLIN3_LWBR_NSPB_10;
+    // uart->RLN3nLWBR = 0x76;
     uart->RLN3nLBRP01 = 0;
+    // uart->RLN3nLBRP01 = 0x81;
 
     // Set data format
     uart->RLN3nLBFC = 
@@ -48,12 +50,8 @@ void renesas_rlin3_init(struct renesas_rlin3* uart)
     uart->RLN3nLMD = RLN3_LMD_UART_MODE; 
     uart->RLN3nLCUC = RLN3_LCUC_LIN_CANC;
 
-    volatile uint32_t LMD =  uart->RLN3nLMD;
-    volatile uint32_t LCUC = uart->RLN3nLCUC;
-
     while ((uart->RLN3nLMST & RLIN3_LMST_OMM0_MSK) != 0x1) {
     }
-
 
     // Enable reception and transmission
     uart->RLN3nLUOER = RLN3_LUOER_UROE | RLN3_LUOER_UTOE;

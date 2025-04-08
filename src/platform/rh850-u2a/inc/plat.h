@@ -1,6 +1,8 @@
 #ifndef PLAT_H
 #define PLAT_H
 
+#include <core.h>
+
 #define PLAT_MEM_BASE 0x200000
 #define PLAT_MEM_SIZE 0x8000000
 
@@ -20,5 +22,13 @@
 #define PLAT_IPIR_BASE   (0xFFFB9000UL)
 
 #define PLAT_BOOTCTRL_ADDR  (0xFFFB2000UL)
+
+#define PLAT_NUM_PORT_REGS  (21)
+#define PLAT_NUM_PORT_GROUPS (11)
+#define PLAT_PORT_BASE  (0xFFD90000UL)
+
+extern uint16_t port_reg_val[PLAT_NUM_PORT_REGS][PLAT_NUM_PORT_GROUPS];
+extern uint32_t port_reg_offset[PLAT_NUM_PORT_REGS];
+extern uint32_t group_number[PLAT_NUM_PORT_GROUPS];
 
 #endif
