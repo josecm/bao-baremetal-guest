@@ -6,7 +6,7 @@
 #include <intc.h>
 
 // We will set TPTMSUDIV to match this frequency (1 MHz, each tick 1us)
-#define TIMER_FREQ (10000000UL)
+#define TIMER_FREQ (1000000UL)
 
 static struct {
     volatile uint32_t TPTMSIRUN;
@@ -36,7 +36,7 @@ static struct {
     volatile uint32_t TPTMSILD0;
     volatile uint32_t TPTMSICNT1;
     volatile uint32_t TPTMSILD1;
-    uint8_t res43[12];
+    uint8_t res43[16];
     volatile uint32_t TPTMSFCNT;
     uint8_t res5[28];
     volatile uint32_t TPTMSUCNT0;
