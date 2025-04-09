@@ -4,7 +4,7 @@
 #include <core.h>
 
 #define ARCH_MAX_CPUS   8
-#define ARCH_MAX_INTERRUPTS    496
+#define ARCH_MAX_INTERRUPTS    2048
 
 #define PRIVATE_IRQS_NUM 32
 
@@ -37,10 +37,10 @@ struct intc2 {
     uint8_t  PAD1[4];               /* 0x1000 - 0x1003 */
     uint32_t IMR[INTC2_IMR_NUM];    /* 0x1004 - 0x10FF */
     uint8_t  PAD2[3808];            /* 0x1100 - 0x1FDF */
-    uint32_t I2EIBG[ARCH_MAX_CPUS];  /* 0x1FE0 - (0x1FE0 + 4*cpu_num - 1) */
+    uint32_t I2EIBG[ARCH_MAX_CPUS]; /* 0x1FE0 - (0x1FE0 + 4*cpu_num - 1) */
     uint8_t  PAD3[PAD3_LEN];        /* (0x1FE0 + 4*cpu_num) - 0x203F */
     uint32_t EIBD[INTC2_IRQ_NUM];   /* 0x2080 - 0x3FFF */
-    uint8_t  PAD4[64];              /* 0x4000 - 0x403F */
+    uint8_t  PAD4[128];             /* 0x4000 - 0x403F */
     uint32_t EEIC[INTC2_IRQ_NUM];   /* 0x4080 - 0x5FFF */
 };
 
