@@ -107,7 +107,7 @@ void _init(){
 
     spin_lock(&init_lock);
     if(!init_done) {
-        plat_init();
+        // plat_init();
         uart_init();
         init_done = true;
     }

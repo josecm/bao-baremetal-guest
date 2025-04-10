@@ -26,5 +26,5 @@ void irq_set_prio(unsigned id, unsigned prio) {
 }
 
 void irq_send_ipi(unsigned long target_cpu_mask) {
-    ipir_hw->channel[0].IPI_REQS = target_cpu_mask;
+    // ipir_hw->channel[0].IPI_REQS = target_cpu_mask;
 }

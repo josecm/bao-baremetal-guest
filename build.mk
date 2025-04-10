@@ -97,7 +97,7 @@ $(gen_ld_file):
 	@echo " -list" >> $@
 	@echo " -nologo" >> $@
 	@echo ' -library="$(shell dirname $(shell dirname $(shell which $(cc))))/lib/v850e3v5/rhs8n.lib"' >> $@
-	@echo " -start=VECTAB,EINTTBL,.text,.const,.data/0,.data.R,.bss,.stackheap/fe100000" >> $@
+	@echo " -start=VECTAB,EINTTBL,.text,.const,.data/10000,.data.R,.bss,.stackheap/fe000000" >> $@
 	@echo " -rom=.data*=.data.*R" >> $@
 
 .SECONDEXPANSION:

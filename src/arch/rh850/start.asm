@@ -42,9 +42,12 @@ stall:
     ldsr r0, 12, 5 ; set MCI to 0
     ldsr r0, 0, 1 ; set SPID host SPID 0
 
-    ;; initialize mpu entries for bank 0 TODO use other banks?
-    ldsr r0, 17, 5 ; set MPBK
     jarl clear_mpu, lp
+
+    ; ; initialize local RAM
+    ; mov 0xFDE00000, r20
+    ; mov 0xFDE0FFFF, r21
+    ; jarl _ram_init, lp
 
     ; enable faults ?
 
@@ -52,11 +55,28 @@ stall:
     mov CPU_MASTER, r10 ; TODO: get value from CPU_MASTER_FIXED
     cmp r5, r10
     bne skip
+
+    ; ; initialize cluster RAM
+    ; mov 0xFE000000, r20
+    ; mov 0xFE07FFFF, r21
+    ; jarl _ram_init, lp
+
+    ; mov 0xFE100000, r20
+    ; mov 0xFE17FFFF, r21
+    ; jarl _ram_init, lp
+
+    ; mov 0xFE400000, r20
+    ; mov 0xFE5FFFFF, r21
+    ; jarl _ram_init, lp
+
+    ; mov 0xFE800000, r20
+    ; mov 0xFE83FFFF, r21
+    ; jarl _ram_init, lp
     
     ; copy non .text segments to ram
     mov #__s.data, r20
     mov #__e.data, r21 ; need to copy until
-    mov 0xfe100000, r22 ; TODO hopefully use the linker otherwise macro
+    mov 0xfe000000, r22 ; TODO hopefully use the linker otherwise macro
     ;; copy from [r20] until [r21] to [r22]
     jarl copy_data, lp
 
@@ -77,6 +97,18 @@ skip:
     mov r20, sp
 
     br __init
+
+; ; r20: start of region
+; ; r21: end of region
+; _ram_init:
+;     br _ram_init_2
+; _ram_init_1:
+;     st.w r0, 0[r20]
+;     add 4, r20
+; _ram_init_2:
+;     cmp r20, r21
+;     bh _ram_init_1
+;     jmp [lp]
 
 ; r20: start of region
 ; r21: end of region
