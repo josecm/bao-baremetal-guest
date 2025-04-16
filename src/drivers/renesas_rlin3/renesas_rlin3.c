@@ -19,6 +19,9 @@
 #define MSRKCPROT              0xFF981710UL 
 #define MSR_RLIN3              0xFF981060UL 
 
+volatile unsigned int uart_rxcnt = 0;
+spinlock_t rx_lock = SPINLOCK_INITVAL;
+
 void renesas_rlin3_init(struct renesas_rlin3* uart)
 {
     *((volatile uint32_t*) MSRKCPROT) = KCPROT_ENABLE;
@@ -65,7 +68,10 @@ void renesas_rlin3_putc(struct renesas_rlin3* uart, int8_t c)
 
 uint32_t renesas_rlin3_getc(struct renesas_rlin3* uart)
 {
-    while(uart->RLN3nLST &= RLN3_LST_URS_MSK);
+    while(!uart_rxcnt);
+
+    uart_rxcnt--;
+
     return uart->RLN3nLURDR;
 }
 

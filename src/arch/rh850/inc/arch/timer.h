@@ -55,10 +55,10 @@ static struct {
 static inline void timer_enable()
 {
     intc_set_tptmsel(TPTM_SEL_EIINT); // configure interrupt as ei
-    tptm->TPTMSUIEN = 1; // enable interrupt to channel 0, compare value 0
+    tptm->TPTMSUIEN = (1ULL << 0); // enable interrupt to channel 0, compare value 0
     tptm->TPTMSUDIV = (PLAT_CLK_CPU / TIMER_FREQ) - 1;
-    tptm->TPTMSUCMP00 = ~0; // set compare value 0 to maximum
-    tptm->TPTMSURUN = 1; // load counter with 0 
+    tptm->TPTMSUCMP00 = ~0; // set compare value 0 to maximum in channel 0
+    tptm->TPTMSURUN = 1; // load counter with 0 in channel 0
 }
 
 static inline uint64_t timer_get()

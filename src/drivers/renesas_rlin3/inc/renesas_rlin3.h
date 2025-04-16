@@ -2,6 +2,7 @@
 #define RENESAS_RLIN3_H
 
 #include <core.h>
+#include <spinlock.h>
 
 struct renesas_rlin3 {
     uint8_t pad0[1];                // 0x0

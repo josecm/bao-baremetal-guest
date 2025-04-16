@@ -29,9 +29,13 @@
 
 spinlock_t print_lock = SPINLOCK_INITVAL;
 
+extern unsigned int uart_rxcnt;
+extern spinlock_t rx_lock;
+
 void uart_rx_handler(unsigned long id){
     printf("cpu%d: %s\n",get_cpuid(), __func__);
     uart_clear_rxirq();
+    uart_rxcnt++;
 }
 
 void ipi_handler(unsigned long id){
@@ -43,6 +47,11 @@ void timer_handler(unsigned long id){
     printf("cpu%d: %s\n", get_cpuid(), __func__);
     timer_set(TIMER_INTERVAL);
     irq_send_ipi(1ull << (get_cpuid() + 1));
+}
+
+#pragma inline_asm hypercall
+void hypercall(unsigned long hypcall_id, ...) {
+    hvtrap 0
 }
 
 void main(void){
@@ -76,6 +85,10 @@ void main(void){
     spin_lock(&print_lock);
     printf("cpu %d up\n", get_cpuid());
     spin_unlock(&print_lock);
+
+    while(uart_getchar() != 'r');
+
+    hypercall(3, 0);
 
     while(1) wfi();
 }

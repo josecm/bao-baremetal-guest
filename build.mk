@@ -61,6 +61,7 @@ endif
 %.bin: %.elf
 	@echo "generating binary	$(patsubst $(cur_dir)/%, %, $@)"
 	@$(ld) -subcommand="$(gen_ld_file)" -form=binary -output="$@"
+	@v850-elf-objcopy -O ihex $(target).elf $(target).hex
 
 $(target).elf: $(objs) $(gen_ld_file)
 	@echo "Linking			$(patsubst $(cur_dir)/%, %, $@)"
