@@ -1,3 +1,7 @@
 
-ARCH_SUB:=riscv32
-include $(cur_dir)/../qemu-riscv64-virt/plat.mk
+ARCH:=riscv
+ARCH_SUB:=riscv64
+
+IRQC:=AIA
+
+drivers:=8250_uart
