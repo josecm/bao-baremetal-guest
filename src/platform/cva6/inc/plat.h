@@ -12,8 +12,8 @@
 #define PLAT_APLIC_CTL_BASE_ADDR     (0xd000000)
 #define PLAT_APLIC_MAX_INTERRUPTS    (32)
 #define PLAT_IMSIC_IF_BASE_ADDR      (0x28002000)
-#define PLAT_IMSIC_MAX_INTERRUPTS    (255)
+#define PLAT_IMSIC_MAX_INTERRUPTS    (64)
 
-// #define CPU_EXT_SSTC 1
+#define CPU_EXT_SSTC 1
 
 #endif

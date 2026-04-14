@@ -1,6 +1,6 @@
 
 ARCH:=riscv
-ARCH_SUB:=riscv64
+ARCH_SUB:=riscv32
 
 IRQC:=AIA
 
